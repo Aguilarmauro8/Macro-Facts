@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Macro Facts — Know Your Numbers</title>
+<meta name="description" content="Your daily calorie and macro targets, labeled like the ones on the box. Free TDEE and macro calculator." />
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --paper: #FBFAF7;
+    --protein: #B33A2E;
+    --carb: #C79A1E;
+    --fat: #4A6741;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .black-fill { font-family: 'Arial Black', 'Helvetica Neue', sans-serif; font-weight: 900; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6vh 6vw;
+    border-bottom: 6px solid var(--ink);
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    line-height: 0.95;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+  }
+  .hero p {
+    max-width: 32rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    opacity: 0.75;
+    margin-bottom: 2rem;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    padding: 0.9rem 1.8rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .cta:hover { transform: translateY(-2px); }
+  .swatches { display: flex; gap: 0.6rem; margin-top: 3rem; }
+  .swatch { width: 14px; height: 14px; }
+  .swatch-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; margin-left: 0.3rem; }
+  .swatch-row { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  /* ---------- APP SECTION ---------- */
+  .app-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 5vh 6vw 8vh;
+  }
+  .app-shell { width: 100%; max-width: 440px; }
+  .section-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 0.4rem; }
+
+  .card { border: 2px solid var(--ink); margin-bottom: 1.5rem; }
+  .card-head { padding: 0.9rem 1.1rem; border-bottom: 2px solid var(--ink); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; display:flex; justify-content: space-between; align-items:center; }
+  .card-body { padding: 1.1rem; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .full { grid-column: 1 / -1; }
+  .field-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; margin-bottom: 0.35rem; }
+  input[type="number"], select {
+    width: 100%;
+    border: 2px solid var(--ink);
+    padding: 0.4rem 0.5rem;
+    font-size: 0.9rem;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .toggle-row { display: flex; gap: 0.5rem; }
+  .toggle-btn {
+    flex: 1;
+    padding: 0.4rem 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 2px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .toggle-btn.active { background: var(--ink); color: var(--paper); }
+
+  .facts-box { border: 4px solid var(--ink); padding: 0.8rem 1rem 1.1rem; }
+  .facts-title { font-size: 1.8rem; padding-bottom: 0.3rem; border-bottom: 8px solid var(--ink); }
+  .cal-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.6rem 0; border-bottom: 4px solid var(--ink); }
+  .cal-row span:first-child { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; }
+  .cal-num { font-size: 2.3rem; }
+  .split-note { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.65; padding: 0.5rem 0; border-bottom: 2px solid var(--ink); }
+  .macro-row { display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0; border-bottom: 2px solid var(--ink); }
+  .macro-row.last { border-bottom: none; }
+  .macro-left { display: flex; align-items: center; gap: 0.5rem; }
+  .dot { width: 12px; height: 12px; display: inline-block; }
+  .macro-name { font-size: 0.9rem; font-weight: 600; }
+  .macro-grams { font-weight: 700; }
+  .macro-pct { opacity: 0.6; font-size: 0.75rem; margin-left: 0.5rem; }
+  .foot-note { font-size: 0.7rem; opacity: 0.55; padding-top: 0.7rem; }
+
+  .premium-locked { padding: 1.3rem 1rem; text-align: center; }
+  .premium-locked p { font-size: 0.85rem; opacity: 0.7; max-width: 20rem; margin: 0 auto 0.9rem; }
+  .lock-icon { font-size: 0.8rem; }
+
+  .slider-block { margin-bottom: 1rem; }
+  .slider-top { display: flex; justify-content: space-between; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+  input[type="range"] { width: 100%; accent-color: var(--ink); }
+  .ratio-note { font-size: 0.75rem; padding-top: 0.3rem; }
+
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(26,26,26,0.55);
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 50;
+  }
+  .modal { width: 100%; max-width: 380px; border: 2px solid var(--ink); background: var(--paper); padding: 1.3rem; }
+  .modal .price { font-size: 1.8rem; margin: 0.4rem 0 1rem; }
+  .modal ul { list-style: none; padding: 0; margin: 0 0 1.1rem; font-size: 0.9rem; }
+  .modal li { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .modal button { width: 100%; padding: 0.65rem 0; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; border: none; cursor: pointer; margin-bottom: 0.5rem; }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-secondary { background: transparent; color: var(--ink); opacity: 0.6; }
+
+  .footer-note { text-align: center; font-size: 0.7rem; opacity: 0.5; margin-top: 1.5rem; }
+
+  @media (max-width: 480px) {
+    .grid2 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="eyebrow">Daily Target Facts</div>
+  <h1 class="black-fill">Know your<br/>numbers like<br/>you know the<br/>label.</h1>
+  <p>Enter your stats. Get your daily calorie and macro targets, formatted like the nutrition facts you already read every day.</p>
+  <button class="cta" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Calculate my macros →</button>
+  <div class="swatch-row">
+    <div style="display:flex;align-items:center;"><span class="swatch" style="background:#B33A2E"></span><span class="swatch-label">Protein</span></div>
+    <div style="display:flex;align-items:center;"><span class="swatch" style="background:#C79A1E"></span><span class="swatch-label">Carbs</span></div>
+    <div style="display:flex;align-items:center;"><span class="swatch" style="background:#4A6741"></span><span class="swatch-label">Fat</span></div>
+  </div>
+</section>
+
+<div class="app-wrap" id="app">
+  <div class="app-shell" id="root"></div>
+</div>
+
+<script>
+(function () {
+  // ---- STRIPE CONFIG ----
+  // 1. Create a Product + recurring Price in your Stripe Dashboard (dashboard.stripe.com/products)
+  // 2. Create a Payment Link for that price (dashboard.stripe.com/payment-links)
+  // 3. Under the Payment Link's "After payment" settings, set the confirmation page to redirect to:
+  //      https://yourdomain.com/?premium=success
+  //    (use the exact URL this site will be deployed at)
+  // 4. Paste the Payment Link URL below.
+  const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/test_14A6oH9mtcvv6Ph1QIasg00";
+
+  const params = new URLSearchParams(window.location.search);
+  const unlockedFromRedirect = params.get("premium") === "success";
+  if (unlockedFromRedirect) {
+    localStorage.setItem("macrofacts_premium", "true");
+    // clean the URL so refreshing doesn't re-trigger anything
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  const alreadyPremium = localStorage.getItem("macrofacts_premium") === "true";
+
+  const state = {
+    sex: "female",
+    age: 29,
+    heightFt: 5,
+    heightIn: 6,
+    weightLb: 143,
+    activity: 1.375,
+    goal: "maintain",
+    premium: alreadyPremium,
+    showUpgrade: false,
+    ratio: { protein: 30, carb: 40, fat: 30 },
+  };
+
+  function bmr() {
+    const s = state.sex === "male" ? 5 : -161;
+    const heightCm = ((state.heightFt * 12) + state.heightIn) * 2.54;
+    const weightKg = state.weightLb * 0.453592;
+    return 10 * weightKg + 6.25 * heightCm - 5 * state.age + s;
+  }
+  function tdee() { return bmr() * state.activity; }
+  function goalCalories() {
+    const t = tdee();
+    if (state.goal === "lose") return t - 500;
+    if (state.goal === "gain") return t + 300;
+    return t;
+  }
+  function activeRatio() {
+    return state.premium ? state.ratio : { protein: 30, carb: 40, fat: 30 };
+  }
+  function grams() {
+    const cal = goalCalories();
+    const r = activeRatio();
+    return {
+      protein: Math.round((cal * (r.protein / 100)) / 4),
+      carb: Math.round((cal * (r.carb / 100)) / 4),
+      fat: Math.round((cal * (r.fat / 100)) / 9),
+    };
+  }
+
+  function render() {
+    const g = grams();
+    const r = activeRatio();
+    const ratioSum = state.ratio.protein + state.ratio.carb + state.ratio.fat;
+
+    document.getElementById("root").innerHTML = `
+      <div class="section-tag">Step 1</div>
+      <div class="card">
+        <div class="card-head"><span>Your Stats</span></div>
+        <div class="card-body grid2">
+          <div>
+            <div class="field-label">Sex</div>
+            <div class="toggle-row">
+              <button class="toggle-btn ${state.sex==='female'?'active':''}" data-act="sex" data-val="female">Female</button>
+              <button class="toggle-btn ${state.sex==='male'?'active':''}" data-act="sex" data-val="male">Male</button>
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Age</div>
+            <input type="number" id="age" value="${state.age}" min="14" max="90" />
+          </div>
+          <div>
+            <div class="field-label">Height</div>
+            <div style="display:flex; gap:0.4rem;">
+              <input type="number" id="heightFt" value="${state.heightFt}" min="3" max="7" style="width:50%;" placeholder="ft" />
+              <input type="number" id="heightIn" value="${state.heightIn}" min="0" max="11" style="width:50%;" placeholder="in" />
+            </div>
+          </div>
+          <div>
+            <div class="field-label">Weight (lbs)</div>
+            <input type="number" id="weight" value="${state.weightLb}" min="80" max="450" />
+          </div>
+          <div class="full">
+            <div class="field-label">Activity</div>
+            <select id="activity">
+              <option value="1.2" ${state.activity===1.2?'selected':''}>Sedentary (desk job, no exercise)</option>
+              <option value="1.375" ${state.activity===1.375?'selected':''}>Light (1-3 workouts/week)</option>
+              <option value="1.55" ${state.activity===1.55?'selected':''}>Moderate (3-5 workouts/week)</option>
+              <option value="1.725" ${state.activity===1.725?'selected':''}>Active (6-7 workouts/week)</option>
+              <option value="1.9" ${state.activity===1.9?'selected':''}>Very active (physical job + training)</option>
+            </select>
+          </div>
+          <div class="full">
+            <div class="field-label">Goal</div>
+            <div class="toggle-row">
+              <button class="toggle-btn ${state.goal==='lose'?'active':''}" data-act="goal" data-val="lose">Lose</button>
+              <button class="toggle-btn ${state.goal==='maintain'?'active':''}" data-act="goal" data-val="maintain">Maintain</button>
+              <button class="toggle-btn ${state.goal==='gain'?'active':''}" data-act="goal" data-val="gain">Gain</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="facts-box">
+        <div class="facts-title black-fill">Daily Target</div>
+        <div class="cal-row">
+          <span>Calories</span>
+          <span class="cal-num black-fill">${Math.round(goalCalories())}</span>
+        </div>
+        <div class="split-note">% based on a ${r.protein}/${r.carb}/${r.fat} protein/carb/fat split</div>
+        ${macroRow('#B33A2E','Protein', g.protein, r.protein)}
+        ${macroRow('#C79A1E','Total Carbohydrate', g.carb, r.carb)}
+        ${macroRow('#4A6741','Total Fat', g.fat, r.fat, true)}
+        <div class="foot-note">BMR ${Math.round(bmr())} kcal &middot; TDEE ${Math.round(tdee())} kcal &middot; Mifflin-St Jeor estimate</div>
+      </div>
+
+      <div class="card" style="margin-top:1.5rem;">
+        <div class="card-head"><span>Custom Macro Split</span>${state.premium?'':'<span class="lock-icon">🔒</span>'}</div>
+        ${state.premium ? premiumBody() : lockedBody()}
+      </div>
+
+      ${state.showUpgrade && !state.premium ? upgradeModal() : ''}
+
+      <div class="footer-note">Estimates only. Not medical advice.</div>
+    `;
+
+    attachHandlers();
+  }
+
+  function macroRow(color, label, gramVal, pct, last) {
+    return `
+      <div class="macro-row ${last?'last':''}">
+        <div class="macro-left">
+          <span class="dot" style="background:${color}"></span>
+          <span class="macro-name">${label}</span>
+        </div>
+        <div>
+          <span class="macro-grams">${gramVal}g</span>
+          <span class="macro-pct">${pct}%</span>
+        </div>
+      </div>`;
+  }
+
+  function lockedBody() {
+    return `
+      <div class="premium-locked">
+        <p>Set your own protein, carb, and fat split instead of the standard 30/40/30 — useful for keto, high-protein cuts, or endurance training.</p>
+        <button class="cta" id="unlockBtn">Unlock Custom Splits →</button>
+      </div>`;
+  }
+
+  function premiumBody() {
+    const keys = [["protein","Protein"],["carb","Carbohydrate"],["fat","Fat"]];
+    const ratioSum = state.ratio.protein + state.ratio.carb + state.ratio.fat;
+    return `
+      <div class="card-body">
+        ${keys.map(([k,label]) => `
+          <div class="slider-block">
+            <div class="slider-top"><span>${label}</span><span><strong>${state.ratio[k]}%</strong></span></div>
+            <input type="range" min="5" max="70" value="${state.ratio[k]}" data-ratio="${k}" />
+          </div>
+        `).join('')}
+        <div class="ratio-note" style="color:${ratioSum===100?'inherit':'#B33A2E'}">
+          ${ratioSum===100 ? 'Splits add up to 100%.' : `Splits add to ${ratioSum}% — adjust so they total 100%.`}
+        </div>
+      </div>`;
+  }
+
+  function upgradeModal() {
+    return `
+      <div class="modal-bg" id="modalBg">
+        <div class="modal">
+          <div class="field-label">Macro Facts Premium</div>
+          <div class="price black-fill">$2.99/mo</div>
+          <ul>
+            <li>✓ Custom macro splits</li>
+            <li>✓ Save unlimited targets</li>
+            <li>✓ No ads</li>
+          </ul>
+          <a class="btn-primary" id="purchaseBtn" href="${STRIPE_PAYMENT_LINK}" style="display:block;text-decoration:none;text-align:center;">Continue to Payment</a>
+          <button class="btn-secondary" id="cancelBtn">Cancel</button>
+        </div>
+      </div>`;
+  }
+
+  function attachHandlers() {
+    document.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state[btn.dataset.act] = btn.dataset.val;
+        render();
+      });
+    });
+    const ageEl = document.getElementById('age');
+    if (ageEl) ageEl.addEventListener('change', e => { state.age = clamp(+e.target.value,14,90); render(); });
+    const heightFtEl = document.getElementById('heightFt');
+    if (heightFtEl) heightFtEl.addEventListener('change', e => { state.heightFt = clamp(+e.target.value,3,7); render(); });
+    const heightInEl = document.getElementById('heightIn');
+    if (heightInEl) heightInEl.addEventListener('change', e => { state.heightIn = clamp(+e.target.value,0,11); render(); });
+    const weightEl = document.getElementById('weight');
+    if (weightEl) weightEl.addEventListener('change', e => { state.weightLb = clamp(+e.target.value,80,450); render(); });
+    const activityEl = document.getElementById('activity');
+    if (activityEl) activityEl.addEventListener('change', e => { state.activity = parseFloat(e.target.value); render(); });
+
+    const unlockBtn = document.getElementById('unlockBtn');
+    if (unlockBtn) unlockBtn.addEventListener('click', () => { state.showUpgrade = true; render(); });
+
+    const cancelBtn = document.getElementById('cancelBtn');
+    if (cancelBtn) cancelBtn.addEventListener('click', () => { state.showUpgrade = false; render(); });
+
+    document.querySelectorAll('[data-ratio]').forEach(sl => {
+      sl.addEventListener('input', e => {
+        state.ratio[e.target.dataset.ratio] = +e.target.value;
+        render();
+      });
+    });
+  }
+
+  function clamp(v, min, max) { return Math.min(max, Math.max(min, isNaN(v) ? min : v)); }
+
+  render();
+})();
+</script>
+</body>
+</html>
