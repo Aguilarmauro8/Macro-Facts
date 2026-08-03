@@ -84,7 +84,7 @@
   .section-tag { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.6; margin-bottom: 0.4rem; }
 
   .card { border: 2px solid var(--ink); margin-bottom: 1.5rem; }
-  .card-head { padding: 0.9rem 1.1rem; border-bottom: 2px solid var(--ink); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; display:flex; justify-content: space-between; align-items:center; }
+  .card-head { padding: 0.9rem 1.1rem; border-bottom: 2px solid var(--ink); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; display:flex; justify-content: s[...]
   .card-body { padding: 1.1rem; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .full { grid-column: 1 / -1; }
@@ -182,7 +182,7 @@
   //      https://yourdomain.com/?premium=success
   //    (use the exact URL this site will be deployed at)
   // 4. Paste the Payment Link URL below.
-  const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/REPLACE_WITH_YOUR_LINK";
+  const STRIPE_PAYMENT_LINK = "http://buystripe.com/test_14A6oH9mtcvv6PH1QIasg00";
 
   const params = new URLSearchParams(window.location.search);
   const unlockedFromRedirect = params.get("premium") === "success";
@@ -293,7 +293,7 @@
       </div>
 
       <div class="card" style="margin-top:1.5rem;">
-        <div class="card-head"><span>Custom Macro Split</span>${state.premium?'':'<span class="lock-icon">🔒</span>'}</div>
+        <div class="card-head"><span>Custom Macro Split</span>${state.premium? '':'<span class="lock-icon">🔒</span>'}</div>
         ${state.premium ? premiumBody() : lockedBody()}
       </div>
 
