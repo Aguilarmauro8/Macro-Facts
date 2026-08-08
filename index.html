@@ -47,6 +47,61 @@
   .dash-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-bottom: 0.3rem; }
   .dash-title { font-size: 1.7rem; margin: 0 0 1.1rem; }
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+  .install-banner {
+    background: linear-gradient(100deg, #F5C518 0%, #FFE07A 100%);
+    border-radius: 20px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.1rem;
+    box-shadow: 0 8px 20px rgba(28,27,41,0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+    animation: bannerIn 0.4s ease both;
+  }
+  @keyframes bannerIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .install-banner .ib-icon { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+  .install-banner .ib-text { flex: 1; }
+  .install-banner .ib-title { font-weight: 700; font-size: 0.92rem; color: #1C1B29; margin-bottom: 0.1rem; }
+  .install-banner .ib-sub { font-size: 0.74rem; color: rgba(28,27,41,0.7); }
+  .install-banner .ib-btn {
+    background: #1C1B29;
+    color: #F5C518;
+    border: none;
+    border-radius: 12px;
+    padding: 0.5rem 0.9rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .install-banner .ib-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: rgba(28,27,41,0.5);
+    cursor: pointer;
+    padding: 0.2rem;
+    line-height: 1;
+  }
+  .ios-install-steps {
+    background: rgba(28,27,41,0.06);
+    border-radius: 14px;
+    padding: 0.8rem 1rem;
+    margin: -0.4rem 0 1.1rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: #1C1B29;
+  }
+  .ios-install-steps b { font-family: 'IBM Plex Mono', monospace; }
   .tile {
     border-radius: 26px;
     padding: 1.15rem;
@@ -214,6 +269,7 @@
 <div class="dash-wrap">
   <div class="dash-eyebrow">Today</div>
   <h1 class="dash-title display">Macro Facts</h1>
+  <div id="installBannerSlot"></div>
   <div class="dash-grid" id="dashGrid"></div>
 </div>
 
@@ -1152,6 +1208,90 @@
   function clamp(v, min, max) { return Math.min(max, Math.max(min, isNaN(v) ? min : v)); }
 
   render();
+})();
+
+// ---- Install banner (PWA "download for free") ----
+(function () {
+  let deferredPrompt = null;
+  let showIosSteps = false;
+
+  function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+  function isIOS() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  }
+  function dismissed() {
+    return localStorage.getItem("macrofacts_install_dismissed") === "true";
+  }
+
+  function renderBanner() {
+    const slot = document.getElementById("installBannerSlot");
+    if (!slot) return;
+    if (isStandalone() || dismissed()) {
+      slot.innerHTML = "";
+      return;
+    }
+
+    const canPromptAndroid = !!deferredPrompt;
+    const btnLabel = canPromptAndroid ? "Install App" : (isIOS() ? "Add to Home Screen" : "Get the App");
+
+    slot.innerHTML = `
+      <div class="install-banner">
+        <button class="ib-close" id="ibCloseBtn" aria-label="Dismiss">×</button>
+        <span class="ib-icon">📲</span>
+        <div class="ib-text">
+          <div class="ib-title">Download Macro Facts — free</div>
+          <div class="ib-sub">Install it like a real app. No app store needed.</div>
+        </div>
+        <button class="ib-btn" id="ibActionBtn">${btnLabel}</button>
+      </div>
+      ${showIosSteps ? `
+        <div class="ios-install-steps">
+          1. Tap the <b>Share</b> icon (square with an arrow up) in Safari's toolbar<br/>
+          2. Scroll down and tap <b>"Add to Home Screen"</b><br/>
+          3. Tap <b>Add</b> — the app icon will appear on your home screen
+        </div>
+      ` : ""}
+    `;
+
+    const closeBtn = document.getElementById("ibCloseBtn");
+    if (closeBtn) closeBtn.addEventListener("click", () => {
+      localStorage.setItem("macrofacts_install_dismissed", "true");
+      renderBanner();
+    });
+
+    const actionBtn = document.getElementById("ibActionBtn");
+    if (actionBtn) actionBtn.addEventListener("click", async () => {
+      if (canPromptAndroid) {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === "accepted") {
+          localStorage.setItem("macrofacts_install_dismissed", "true");
+        }
+        deferredPrompt = null;
+        renderBanner();
+      } else if (isIOS()) {
+        showIosSteps = !showIosSteps;
+        renderBanner();
+      } else {
+        showIosSteps = !showIosSteps;
+        renderBanner();
+      }
+    });
+  }
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    renderBanner();
+  });
+  window.addEventListener("appinstalled", () => {
+    localStorage.setItem("macrofacts_install_dismissed", "true");
+    renderBanner();
+  });
+
+  renderBanner();
 })();
 
 if ("serviceWorker" in navigator) {
