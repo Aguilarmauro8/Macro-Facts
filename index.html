@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google Analytics (GA4) -->
+<!-- Replace G-BM7P3N3POT below with your real Measurement ID from analytics.google.com -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BM7P3N3POT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BM7P3N3POT');
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Macro Facts — Know Your Numbers</title>
@@ -287,6 +296,9 @@
   if (unlockedFromRedirect) {
     localStorage.setItem("macrofacts_premium", "true");
     window.history.replaceState({}, document.title, window.location.pathname);
+    if (typeof gtag === "function") {
+      gtag('event', 'purchase_confirmed', { event_category: 'premium' });
+    }
   }
   const alreadyPremium = localStorage.getItem("macrofacts_premium") === "true";
 
@@ -1048,7 +1060,7 @@
             <li>✓ Custom macro splits</li>
             <li>✓ No ads</li>
           </ul>
-          <a class="btn-primary" id="purchaseBtn" href="${STRIPE_PAYMENT_LINK}" style="display:block;text-decoration:none;text-align:center;">Continue to Payment</a>
+          <a class="btn-primary" id="purchaseBtn" href="${STRIPE_PAYMENT_LINK}" onclick="if(typeof gtag==='function'){gtag('event','begin_checkout',{event_category:'premium'});}" style="display:block;text-decoration:none;text-align:center;">Continue to Payment</a>
           <button class="btn-secondary" id="cancelBtn">Cancel</button>
         </div>
       </div>`;
@@ -1191,9 +1203,15 @@
     });
 
     const unlockBtn = document.getElementById('unlockBtn');
-    if (unlockBtn) unlockBtn.addEventListener('click', () => { state.showUpgrade = true; render(); });
+    if (unlockBtn) unlockBtn.addEventListener('click', () => {
+      if (typeof gtag === "function") gtag('event', 'unlock_click', { event_category: 'premium', event_label: 'custom_split' });
+      state.showUpgrade = true; render();
+    });
     const unlockFoodLogBtn = document.getElementById('unlockFoodLogBtn');
-    if (unlockFoodLogBtn) unlockFoodLogBtn.addEventListener('click', () => { state.showUpgrade = true; render(); });
+    if (unlockFoodLogBtn) unlockFoodLogBtn.addEventListener('click', () => {
+      if (typeof gtag === "function") gtag('event', 'unlock_click', { event_category: 'premium', event_label: 'food_log' });
+      state.showUpgrade = true; render();
+    });
     const cancelBtn = document.getElementById('cancelBtn');
     if (cancelBtn) cancelBtn.addEventListener('click', () => { state.showUpgrade = false; render(); });
 
