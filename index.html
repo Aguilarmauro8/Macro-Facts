@@ -17,7 +17,7 @@
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" href="/favicon-32.png" sizes="32x32" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<meta name="theme-color" content="#1C1B29" />
+<meta name="theme-color" content="#0284C7" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Macro Facts" />
@@ -25,20 +25,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F2EFFB;
-    --ink: #1C1B29;
+    --bg: #FAF6FF;
+    --ink: #16121F;
     --ink-soft: rgba(28,27,41,0.62);
     --card: #FFFFFF;
-    --yellow: #F5C518;
-    --protein: #D14B32;
-    --carb: #C99A2E;
-    --fat: #4F6B45;
-    --grad-target: linear-gradient(135deg,#6E7CF6 0%,#9B6EF6 100%);
-    --grad-food: linear-gradient(160deg,#FF9A56 0%,#FF6F3D 100%);
-    --grad-weight: linear-gradient(160deg,#241C4E 0%,#3B2E73 100%);
-    --grad-history: linear-gradient(135deg,#FF7AA8 0%,#FF9A6E 100%);
-    --grad-stats: linear-gradient(135deg,#EAE6FC 0%,#CFE0FF 100%);
-    --grad-premium: linear-gradient(135deg,#232323 0%,#000000 100%);
+    --yellow: #38BDF8;
+    --sky-deep: #0369A1;
+    --protein: #EF4444;
+    --carb: #F59E0B;
+    --fat: #22C55E;
+    --grad-target: linear-gradient(135deg,#7C3AED 0%,#EC4899 100%);
+    --grad-food: linear-gradient(160deg,#FF6B6B 0%,#FFA502 100%);
+    --grad-weight: linear-gradient(160deg,#1E1B4B 0%,#6D28D9 100%);
+    --grad-history: linear-gradient(135deg,#F72585 0%,#FF9E00 100%);
+    --grad-stats: linear-gradient(135deg,#F3E8FF 0%,#FCE7F3 100%);
+    --grad-premium: linear-gradient(135deg,#FFFFFF 0%,#E0F2FE 100%);
   }
   * { box-sizing: border-box; }
   body {
@@ -58,7 +59,7 @@
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
 
   .install-banner {
-    background: linear-gradient(100deg, #F5C518 0%, #FFE07A 100%);
+    background: linear-gradient(100deg, #FFD60A 0%, #FFEA70 100%);
     border-radius: 20px;
     padding: 1rem 1.1rem;
     margin-bottom: 1.1rem;
@@ -72,11 +73,11 @@
   @keyframes bannerIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .install-banner .ib-icon { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
   .install-banner .ib-text { flex: 1; }
-  .install-banner .ib-title { font-weight: 700; font-size: 0.92rem; color: #1C1B29; margin-bottom: 0.1rem; }
+  .install-banner .ib-title { font-weight: 700; font-size: 0.92rem; color: #16121F; margin-bottom: 0.1rem; }
   .install-banner .ib-sub { font-size: 0.74rem; color: rgba(28,27,41,0.7); }
   .install-banner .ib-btn {
-    background: #1C1B29;
-    color: #F5C518;
+    background: #16121F;
+    color: #FFD60A;
     border: none;
     border-radius: 12px;
     padding: 0.5rem 0.9rem;
@@ -108,7 +109,7 @@
     margin: -0.4rem 0 1.1rem;
     font-size: 0.8rem;
     line-height: 1.6;
-    color: #1C1B29;
+    color: #16121F;
   }
   .ios-install-steps b { font-family: 'IBM Plex Mono', monospace; }
   .tile {
@@ -126,7 +127,7 @@
   .tile:active { transform: scale(0.97); }
   .tile-full { grid-column: 1 / -1; }
   .tile-white { background: var(--card); color: var(--ink); }
-  .tile-dark { color: #F4F1FB; }
+  .tile-dark { color: #FBF7FF; }
   .tile-label { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
   .tile-sub { font-size: 0.82rem; line-height: 1.35; opacity: 0.85; }
   .tile-icon { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; }
@@ -138,10 +139,10 @@
   .tile-exercise { background: var(--card); color: var(--ink); min-height: 150px; }
   .tile-quick { background: var(--card); color: var(--ink); }
   .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-  .quick-btn { background: #F4F1FB; border-radius: 16px; padding: 0.7rem 0; text-align: center; font-size: 1.3rem; border: none; cursor: pointer; }
+  .quick-btn { background: #FBF7FF; border-radius: 16px; padding: 0.7rem 0; text-align: center; font-size: 1.3rem; border: none; cursor: pointer; }
   .quick-btn span.qlabel { display:block; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.25rem; font-family: 'IBM Plex Mono', monospace; opacity: 0.6; }
   .tile-history { background: var(--grad-history); color: #fff; min-height: 130px; }
-  .tile-premium { background: var(--grad-premium); color: var(--yellow); }
+  .tile-premium { background: var(--grad-premium); color: var(--sky-deep); }
   .lock-pill { display:inline-block; font-family:'IBM Plex Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; background: rgba(255,255,255,0.25); padding: 0.15rem 0.5rem; border-radius: 20px; margin-bottom: 0.4rem; }
 
   /* ============ DETAIL SECTIONS ============ */
@@ -162,7 +163,7 @@
     padding: 0.5rem 0.6rem;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.9rem;
-    background: #FAF9FE;
+    background: #FBF8FF;
     color: var(--ink);
   }
   select { font-family: 'Space Grotesk', sans-serif; }
@@ -532,11 +533,11 @@
 
   function toastHTML() {
     if (!state.toast) return '';
-    const bg = state.toast.type === 'good' ? '#4F6B45' : ((state.toast.type === 'over' || state.toast.type === 'error') ? '#D14B32' : '#1C1B29');
+    const bg = state.toast.type === 'good' ? '#22C55E' : ((state.toast.type === 'over' || state.toast.type === 'error') ? '#EF4444' : '#16121F');
     return `
-      <div id="toastBanner" style="position:fixed; top:1rem; left:1rem; right:1rem; max-width:420px; margin:0 auto; background:${bg}; color:#F4F1FB; border-radius:16px; padding:0.9rem 1rem; font-size:0.85rem; line-height:1.4; z-index:100; box-shadow:0 10px 26px rgba(0,0,0,0.25); display:flex; justify-content:space-between; gap:0.8rem; align-items:flex-start; animation: toastIn 0.35s ease both;">
+      <div id="toastBanner" style="position:fixed; top:1rem; left:1rem; right:1rem; max-width:420px; margin:0 auto; background:${bg}; color:#FBF7FF; border-radius:16px; padding:0.9rem 1rem; font-size:0.85rem; line-height:1.4; z-index:100; box-shadow:0 10px 26px rgba(0,0,0,0.25); display:flex; justify-content:space-between; gap:0.8rem; align-items:flex-start; animation: toastIn 0.35s ease both;">
         <span>${state.toast.message}</span>
-        <button id="closeToastBtn" style="background:none;border:none;color:#F4F1FB;opacity:0.7;cursor:pointer;font-size:1rem;line-height:1;flex-shrink:0;">×</button>
+        <button id="closeToastBtn" style="background:none;border:none;color:#FBF7FF;opacity:0.7;cursor:pointer;font-size:1rem;line-height:1;flex-shrink:0;">×</button>
       </div>`;
   }
 
@@ -557,9 +558,9 @@
       return [x,y];
     });
     const pathD = pts.map((p,i) => (i===0?'M':'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-    const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${color||'#1C1B29'}" stroke="#F5C518" stroke-width="1.5"/>`).join('');
+    const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${color||'#16121F'}" stroke="#FFD60A" stroke-width="1.5"/>`).join('');
     return `<svg width="100%" viewBox="0 0 ${w} ${h}" style="display:block;">
-      <path d="${pathD}" fill="none" stroke="${color||'#1C1B29'}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="${pathD}" fill="none" stroke="${color||'#16121F'}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
       ${dots}
     </svg>`;
   }
@@ -596,22 +597,22 @@
     const goalY = yFor(goalVal).toFixed(1);
     const dots = pts.map((p,i) => {
       const v = values[i];
-      let color = '#1C1B29';
+      let color = '#16121F';
       if (v > 0) {
         const pct = v / goalVal;
-        if (metric === 'protein') color = pct >= 0.95 ? '#4F6B45' : '#C99A2E';
-        else color = (pct >= 0.93 && pct <= 1.07) ? '#4F6B45' : (pct > 1.07 ? '#D14B32' : '#C99A2E');
+        if (metric === 'protein') color = pct >= 0.95 ? '#22C55E' : '#F59E0B';
+        else color = (pct >= 0.93 && pct <= 1.07) ? '#22C55E' : (pct > 1.07 ? '#EF4444' : '#F59E0B');
       }
-      return `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${color}" stroke="#1C1B29" stroke-width="1"/>`;
+      return `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${color}" stroke="#16121F" stroke-width="1"/>`;
     }).join('');
     const startLabel = history[0].date.toLocaleDateString(undefined,{month:'short',day:'numeric'});
     const endLabel = history[days-1].date.toLocaleDateString(undefined,{month:'short',day:'numeric'});
     return `<svg width="100%" viewBox="0 0 ${w} ${h+18}" style="display:block;">
-      <line x1="${pad}" y1="${goalY}" x2="${w-pad}" y2="${goalY}" stroke="#1C1B29" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
-      <path d="${pathD}" fill="none" stroke="#1C1B29" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.8"/>
+      <line x1="${pad}" y1="${goalY}" x2="${w-pad}" y2="${goalY}" stroke="#16121F" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+      <path d="${pathD}" fill="none" stroke="#16121F" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.8"/>
       ${dots}
-      <text x="${pad}" y="${h+14}" font-size="9" fill="#1C1B29" opacity="0.45">${startLabel}</text>
-      <text x="${w-pad}" y="${h+14}" font-size="9" fill="#1C1B29" opacity="0.45" text-anchor="end">${endLabel}</text>
+      <text x="${pad}" y="${h+14}" font-size="9" fill="#16121F" opacity="0.45">${startLabel}</text>
+      <text x="${w-pad}" y="${h+14}" font-size="9" fill="#16121F" opacity="0.45" text-anchor="end">${endLabel}</text>
     </svg>`;
   }
 
@@ -688,7 +689,7 @@
       </div>
 
       <div class="tile tile-exercise" data-goto="section-exercise" style="display:flex;align-items:center;gap:0.8rem;">
-        ${ringSVG(burned/burnGoal, '#4F6B45')}
+        ${ringSVG(burned/burnGoal, '#22C55E')}
         <div>
           <div class="tile-label" style="font-size:0.95rem;">Exercise</div>
           <div class="tile-sub">${burned}/${burnGoal} kcal burned</div>
@@ -730,7 +731,7 @@
     const ratioSum = state.ratio.protein + state.ratio.carb + state.ratio.fat;
     const goalCal = Math.round(goalCalories());
     const adj = weeklyAdjustment();
-    const weightSpark = sparklineSVG([...state.weighIns].sort((a,b)=>a.t-b.t), '#1C1B29');
+    const weightSpark = sparklineSVG([...state.weighIns].sort((a,b)=>a.t-b.t), '#16121F');
 
     renderDashboard();
 
@@ -791,9 +792,9 @@
           <span class="cal-num mono">${goalCal}</span>
         </div>
         <div class="split-note">% based on a ${r.protein}/${r.carb}/${r.fat} protein/carb/fat split${adj.delta !== 0 ? ' · weekly-adjusted' : ''}</div>
-        ${macroRow('#D14B32','Protein', g.protein, r.protein)}
-        ${macroRow('#C99A2E','Total Carbohydrate', g.carb, r.carb)}
-        ${macroRow('#4F6B45','Total Fat', g.fat, r.fat, true)}
+        ${macroRow('#EF4444','Protein', g.protein, r.protein)}
+        ${macroRow('#F59E0B','Total Carbohydrate', g.carb, r.carb)}
+        ${macroRow('#22C55E','Total Fat', g.fat, r.fat, true)}
         <div class="foot-note">BMR ${Math.round(bmr())} kcal · TDEE ${Math.round(tdee())} kcal · Mifflin-St Jeor estimate</div>
       </div>
 
@@ -1042,7 +1043,7 @@
             <input type="range" min="5" max="70" value="${state.ratio[k]}" data-ratio="${k}" />
           </div>
         `).join('')}
-        <div class="ratio-note" style="color:${ratioSum===100?'inherit':'#D14B32'}">
+        <div class="ratio-note" style="color:${ratioSum===100?'inherit':'#EF4444'}">
           ${ratioSum===100 ? 'Splits add up to 100%.' : `Splits add to ${ratioSum}% — adjust so they total 100%.`}
         </div>
       </div>`;
